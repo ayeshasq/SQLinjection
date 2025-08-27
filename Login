@@ -1,0 +1,42 @@
+#Login
+@app.route("/", methods = ['POST', 'GET']) 
+
+def login():
+  if request.method == 'POST':
+    email = request.form['email'] 
+    password = request.form['password']
+
+
+    allData = [email,password]
+
+
+DetectionOp = [predict_sqli_attack(i) for i in allData] 
+print("DetectionOp")
+print(DetectionOp)
+
+email_part = DetectionOp[0][0]
+pass_part = DetectionOp[1][0]
+
+if "SQL Injection" == email_part or "SQL Injection" == pass_part:
+    msg = "SQL Injection detected"
+    print("we are in injection mode")
+    return render_template('login.html',FinalMsg=msg)
+
+else:
+    con = dbConnection()
+    cursor = con.cursor()
+    result_count = cursor.execute('SELECT * FROM users WHERE email = %s AND pass = %s', (email, password))
+    result = cursor.fetchone() 
+    print("result") 
+    print(result)
+
+if result_count>0:
+    print("len of result") 
+		session['uname'] = result[1] 
+		session['userid'] = result[0] 
+		return redirect(url_for('root'))
+
+else:
+
+		return render_template('login.html')
+		return render_template('login.html')
