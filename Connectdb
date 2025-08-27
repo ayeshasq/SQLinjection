@@ -1,0 +1,14 @@
+def dbConnection():
+try:
+connection = pymysql.connect(host="localhost", user="root", password="root",
+database="sqlinjection",charset='utf8')
+return connection
+except:
+print("Something went wrong in database Connection")
+def dbClose():
+try:
+dbConnection().close()
+except:
+print("Something went wrong in Close DB Connection")
+con=dbConnection()
+cursor=con.cursor()
