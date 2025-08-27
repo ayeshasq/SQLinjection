@@ -1,0 +1,26 @@
+#LIMITATIONS OF THE SYSTEM
+
+# For the technique to be practical, the monitoring overhead must not affect the
+usability of the web application. We analyze the costs of running AMNESIA monitoring in
+terms of space and time. The space requirement of monitoring is dominated by the size of the
+generated SQL query models. In the worst case, the size of the query models is quadratic in
+the size of the application. This case corresponds to the unlikely situation of a programme
+that branches and modifies the query string for each programme statement. In typical
+programs, the generated automata have a linear programme size. In fact, it has been our
+experience that most slots are actually quite small for the size of the corresponding
+application. The time complexity of the approach depends on the cost of running the query
+tokens against the models. Since we are checking a set of tokens against NDFA, the
+complexity of the comparison is worst-case exponential in the number of tokens in the query
+(in the worst case, all states are visited for each token). However, in practice, SQL query
+models typically reduce to trees, and the cost of matching is nearly linear with query size.
+Our experience shows that the cost of the running access phase is negligible. In terms of
+imitations, our technique can generate false positives and false negatives.
+Although the string analysis we use is conservative, false positives may be generated
+in situations where the string analysis is not accurate enough. For example, if the parser
+cannot determine that a hard-coded string in the application is a keyword, it may assume that
+it is an input-related value and incorrectly represent it as a /3 in the SQL query model. At
+runtime, the original keyword would not match a placeholder for a variable, and AMNESIA
+would mark the corresponding query as SQL. False negatives can occur when a constructed
+SQL query model contains dummy queries and an attacker is able to generate an injection attack that matches 
+one of the dummy queries. In this work, an attempt was made to improve the effectiveness of the techniques
+above by employing a combination approach to protecting web applications from SQL Injection attacks.
