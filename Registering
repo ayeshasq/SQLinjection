@@ -1,0 +1,51 @@
+@app.route("/register", methods = ['GET', 'POST']) def register():
+if request.method == 'POST':
+#Parse form data
+# print("hii register")
+email = request.form['email'] password = request.form['password'] username = request.form['username'] add = request.form['add']
+postc = request.form['postc'] mob = request.form['mob'] productId = 0 print(password)
+print(email)
+print(username)
+print(add)
+print(postc)
+print(mob)
+print(productId)
+allData = [email,password,username,add,postc,mob] DetectionOp = [predict_sqli_attack(i) for i in allData] print("DetectionOp")
+print(DetectionOp)
+email_part = DetectionOp[0][0] pass_part = DetectionOp[1][0]
+username_part = DetectionOp[2][0] 
+add_part = DetectionOp[3][0] 
+postc_part = DetectionOp[4][0] 
+mob_part = DetectionOp[5][0]
+try:
+if "SQL Injection" == email_part or "SQL Injection" == pass_part or "SQL Injection"
+== username_part or "SQL Injection" == add_part or "SQL Injection" == postc_part or "SQL Injection" == mob_part:
+msg = "SQL Injection detected"
+print("we are in injection mode")
+return render_template('login.html',FinalMsg=msg)
+else:
+con = dbConnection()
+cursor = con.cursor()
+sql1 = "INSERT INTO users (username, email, pass) VALUES (%s, %s, %s)" val1 = (username, email, password)
+cursor.execute(sql1, val1)
+print("query 1 submitted")
+sql2 = "INSERT INTO address (username, email, address, postcode, mobile)
+VALUES (%s, %s, %s, %s, %s)"
+val2 = (username, email, add, str(postc), str(mob))
+cursor.execute(sql2, val2)
+print("query 2 submitted")
+# sql3 = "INSERT INTO kart1 (username, productId) VALUES (%s, %s)" # val3 = (username, int(productId))
+# cursor.execute(sql3, val3)
+# print("query 3 submitted")
+con.commit()
+FinalMsg = "Congrats! Your account registerd successfully!"
+
+except:
+con.rollback()
+msg = "Database Error occured"
+
+print(msg)
+return render_template("login.html", error=msg) finally:
+dbClose()
+return render_template("login.html",FinalMsg=FinalMsg)
+return render_template("login.html")
